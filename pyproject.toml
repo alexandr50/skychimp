@@ -3,7 +3,7 @@ name = "coursework-6"
 version = "0.1.0"
 description = ""
 authors = ["alexandr <dmitrymaslov2016@mai.ru>"]
-readme = "README.md"
+
 packages = [{include = "coursework_6"}]
 
 [tool.poetry.dependencies]
