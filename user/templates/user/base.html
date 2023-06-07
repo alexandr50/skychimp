@@ -15,9 +15,13 @@
     <h5 class="my-0 mr-md-auto font-weight-normal">Django</h5>
     <nav class="ms-5">
         <a class="p-2 btn btn-outline-primary" href="">Главная</a>
-        <a class="p-2 btn btn-outline-primary" href="">Контакты</a>
-        <a class="p-2 btn btn-outline-primary" href="">Создать продукт</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'customer:list_customers' %}">Список клиентов</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'customer:create_customer' %}">Создать клиента</a>
+        {% if user.is_authenticated %}
+            <a class="p-2 btn btn-outline-primary" href="{% url 'user:logout' %}">Выйти {{ user.username }}</a>
+        {%  else %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'user:login' %}">Аутентификация</a>
+        {%  endif %}
     </nav>
 </div>
 

@@ -1,4 +1,4 @@
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import UpdateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -55,13 +55,13 @@ class ProfileUser(UpdateView, BaseClassContextMixin, UserDispatchMixin):
 
         return User.objects.get(id=self.request.user.pk)
 
-    def get_context_data(self, **kwargs):
-        context = super(ProfileUser, self).get_context_data()
-        context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
-        return context
 
     def form_valid(self, form):
         messages.set_level(self.request, messages.SUCCESS)
         messages.error(self.request, 'Данные изменены')
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
+
+
+class LogoutUser(LogoutView):
+    template_name = 'user/login.html'
