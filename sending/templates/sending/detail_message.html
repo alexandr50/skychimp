@@ -1,0 +1,24 @@
+
+{% extends 'user/base.html' %}
+
+{%  block content %}
+    <div class="container">
+
+   <div class="row text-center">
+                <div class="col-6">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">{{ object.theme }}</h4>
+                        </div>
+
+                        <div class="card-body">
+
+
+                            <p class="text-info">{{ object.content }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+{% endblock %}

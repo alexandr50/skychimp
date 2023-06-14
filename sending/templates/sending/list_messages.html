@@ -1,0 +1,28 @@
+{% extends 'user/base.html' %}
+
+{%  block content %}
+    <div class="container">
+ {% for object in object_list %}
+   <div class="row text-center">
+                <div class="col-6">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">{{ object.theme }}</h4>
+                        </div>
+
+                        <div class="card-body">
+
+
+                           <p class="text-info">{{ object.content }}</p>
+
+                            <a type="button" href="{% url 'sending:detail_message' object.id %}"
+                               class="btn btn-lg btn-block btn-outline-primary">Детализация</a>
+                             <a type="button" href="{% url 'sending:update_message' object.id %}"
+                               class="btn btn-lg btn-block btn-danger">Изменить</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    {% endfor %}
+    </div>
+{% endblock %}

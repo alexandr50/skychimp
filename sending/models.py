@@ -10,8 +10,6 @@ class Message(models.Model):
     theme = models.CharField(max_length=50, verbose_name='Тема')
     content = models.TextField(verbose_name='Контент')
 
-    def __str__(self):
-        return self.theme
 
     class Meta:
         verbose_name = 'Сообщение'
@@ -24,14 +22,14 @@ class Sending(models.Model):
     ONE_A_MONTH = 'раз в месяц'
 
     INTERVAL = (
-        (ONE_A_DAY, 'one_a_day'), (ONE_A_WEEK, 'one_a_week'), (ONE_A_MONTH, 'one_a_month')
+        (ONE_A_DAY, 'раз в день'), (ONE_A_WEEK, 'раз в неделю'), (ONE_A_MONTH, 'раз в месяц')
     )
     COMPLITED = 'Завершена'
     CREATED = 'Создана'
     ACTIVATED = 'Запущена'
 
     STATUS = (
-        (COMPLITED, 'complited'), (CREATED, 'created'), (ACTIVATED, 'activated')
+        (COMPLITED, 'завершена'), (CREATED, 'создана'), (ACTIVATED, 'активирована')
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Создатель')
@@ -41,6 +39,10 @@ class Sending(models.Model):
     interval = models.CharField(choices=INTERVAL, max_length=30, verbose_name='Периодичность')
     status_sending = models.CharField(choices=STATUS, max_length=30, verbose_name='статус')
 
+    class Meta:
+        verbose_name = 'Рассылка'
+        verbose_name_plural = 'Рассылки'
+
 
 
 
@@ -48,3 +50,8 @@ class TrySending(models.Model):
     last_attempt = models.DateTimeField(auto_now_add=True, verbose_name='Дата последней попытки')
     status_attempt = models.CharField(max_length=30, verbose_name='Текущий статус')
     answer_server = models.CharField(max_length=20, verbose_name='Ответ почтового сервера')
+
+
+    class Meta:
+        verbose_name = 'Попытка рассылки'
+        verbose_name_plural = 'Попытки рассылок'

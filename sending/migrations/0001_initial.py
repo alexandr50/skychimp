@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('interval', models.CharField(choices=[('раз в день', 'one_a_day'), ('раз в неделю', 'one_a_week'), ('раз в месяц', 'one_a_month')], max_length=30, verbose_name='Периодичность')),
                 ('status_sending', models.CharField(choices=[('Завершена', 'complited'), ('Создана', 'created'), ('Запущена', 'activated')], max_length=30, verbose_name='статус')),
                 ('customer', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='customer.customer', verbose_name='Клиент')),
-                ('message', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='mailing.message', verbose_name='Сообщение')),
+                ('message', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='sending.message', verbose_name='Сообщение')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Создатель')),
             ],
         ),
