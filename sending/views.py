@@ -13,6 +13,9 @@ class CreateMessage(CreateView):
     template_name = 'sending/create_message.html'
     success_url = 'sending:list_messages'
     form_class = MessageForm
+    extra_context = {
+        'title': 'Создание письма'
+    }
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST)
@@ -28,10 +31,16 @@ class CreateMessage(CreateView):
 class ListMessages(ListView):
     model = Message
     template_name = 'sending/list_messages.html'
+    extra_context = {
+        'title': 'Список писем'
+    }
 
 class DetailMessage(DetailView):
     model = Message
     template_name = 'sending/detail_message.html'
+    extra_context = {
+        'title': 'Информация о письме'
+    }
 
     def get_object(self, queryset=None):
         message = get_object_or_404(Message, pk=self.kwargs['pk'])
@@ -41,6 +50,9 @@ class UpdateMessage(UpdateView):
     model = Message
     template_name = 'sending/update_message.html'
     form_class = MessageForm
+    extra_context = {
+        'title': 'Обновление информации о письме'
+    }
 
     def form_valid(self, form):
         super().form_valid(form)
@@ -53,11 +65,17 @@ class UpdateMessage(UpdateView):
 class DeleteMessage(DeleteView):
     model = Message
     success_url = reverse_lazy('sending:list_messages')
+    extra_context = {
+        'title': 'Информация о письме'
+    }
 
 
 class ListSending(ListView):
     model = Sending
     template_name = 'sending/list_sending.html'
+    extra_context = {
+        'title': 'Список рассылок'
+    }
 
     def get_queryset(self):
         return Sending.objects.all()
@@ -67,13 +85,21 @@ class CreateSending(CreateView):
     template_name = 'sending/create_sending.html'
     form_class = CreateSendingForm
     success_url = 'sending:list_sending'
+    extra_context = {
+        'title': 'Создание рассылки'
+    }
 
     def form_valid(self, form):
         if form.is_valid():
-            self.object = form.save(commit=False)  # Подготовиться обьект с данными из формы
-            self.object.user_create = self.request.user  # В поле user_create запишится пользователь который делает запрос
+            self.object = form.save(commit=False)
+            self.object.user = self.request.user
             self.object.save()
-        return super().form_valid(form)
+        # super().form_valid(form)
+            return HttpResponseRedirect(reverse('sending:list_sending'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
     # def post(self, request, *args, **kwargs):
     #     form = CreateSendingForm(data=request.POST)
@@ -89,10 +115,21 @@ class CreateSending(CreateView):
         user = User.objects.get(pk=self.kwargs['pk'])
         return user
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'request': self.request.user})
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs.update({'request': self.request.user})
+    #     return kwargs
+
+class DetailSending(DetailView):
+    model = Sending
+    template_name = 'sending/detail_sending.html'
+    extra_context = {
+        'title': 'Информация о рассылке'
+    }
+
+    def get_object(self, queryset=None):
+        sending = Sending.objects.get(pk=self.kwargs['pk'])
+        return sending
 
 
 

@@ -14,6 +14,9 @@ class CreateCustomer(CreateView):
     template_name = 'customer/create_customer.html'
     form_class = CustomerForm
     success_url = 'customer:create_customer'
+    extra_context = {
+        'title': 'Создание клиента'
+    }
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST)
@@ -50,6 +53,9 @@ class UpdateCustomer(UpdateView):
     model = Customer
     template_name = 'customer/update_customer.html'
     form_class = UpdateCustomerForm
+    extra_context = {
+        'title': 'Обновление информации о клиенте'
+    }
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

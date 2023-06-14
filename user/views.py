@@ -15,6 +15,9 @@ class RegisterUser(CreateView):
     form_class = UserRegisterForm
     template_name = 'user/register.html'
     success_url = reverse_lazy('user:login')
+    extra_context = {
+        'title': 'Регистрация'
+    }
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST)
@@ -35,6 +38,9 @@ class LoginUser(LoginView):
     form_class = UserLoginForm
     template_name = 'user/login.html'
     success_url = reverse_lazy('user:profile')
+    extra_context = {
+        'title': 'Авторизация'
+    }
 
 
 class ProfileUser(UpdateView, BaseClassContextMixin, UserDispatchMixin):
@@ -42,6 +48,9 @@ class ProfileUser(UpdateView, BaseClassContextMixin, UserDispatchMixin):
     form_class = UserProfileForm
     template_name = 'user/profile.html'
     success_url = reverse_lazy('user:profile')
+    extra_context = {
+        'title': 'Профиль'
+    }
 
     def post(self, request, *args, **kwargs):
         form = UserProfileForm(data=request.POST, instance=request.user)
@@ -65,3 +74,6 @@ class ProfileUser(UpdateView, BaseClassContextMixin, UserDispatchMixin):
 
 class LogoutUser(LogoutView):
     template_name = 'user/login.html'
+    extra_context = {
+        'title': 'Выход'
+    }

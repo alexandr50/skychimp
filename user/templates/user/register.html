@@ -1,5 +1,7 @@
 {% extends 'user/base.html' %}
 
+{% block title %} {{ title }} {% endblock %}
+
 {% block content %}
     {% if form.errors %}
     <div class="alert alert-warning alert-dismissible fade show" role="alert"

@@ -1,0 +1,32 @@
+{% extends 'user/base.html' %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{%  block content %}
+    <div class="container">
+
+   <div class="row text-center">
+                <div class="col-6">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Создатель рассылки: {{ object.user }}</h4>
+                        </div>
+
+                        <div class="card-body">
+
+
+                            <ul class="list-unstyled mt-3 mb-4 text-start m-3 btn-group-vertical" >
+                                <li>Клиент:  {{ object.customer.first_name }}  {{ object.customer.last_name }}</li>
+                                <li>Тема письма:  {{ object.message.theme}}</li>
+                                <li>Время:  {{ object.time_sending}}</li>
+                                <li>Интервал:  {{ object.interval}}</li>
+                                <li>Статус:  {{ object.status_sending}}</li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+{% endblock %}

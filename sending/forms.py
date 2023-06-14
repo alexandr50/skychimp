@@ -18,11 +18,11 @@ class MessageForm(forms.ModelForm):
 
 class CreateSendingForm(forms.ModelForm):
     # customer = forms.MultipleChoiceField(
-    #     choices=[(customer, customer) for customer in
+    #     choices=[(customer, customer.first_name) for customer in
     #              Customer.objects.all()])
     #
     # message = forms.ChoiceField(
-    #     choices=[(message, message) for message in Message.objects.all()],
+    #     choices=[(message, message.theme) for message in Message.objects.all()],
     #     widget=forms.Select(attrs={'class': 'form-select', 'placeholder': 'Письмо'}))
     #
     # interval = forms.ChoiceField(choices=Sending.INTERVAL,
@@ -34,12 +34,12 @@ class CreateSendingForm(forms.ModelForm):
         model = Sending
         fields = ('interval', 'status_sending', 'customer', 'message')
 
-    def __init__(self, *args, **kwargs):
-
-        self.request = kwargs.pop('request', None)
-
-        super().__init__(*args, **kwargs)
-        self.fields['customer'].queryset = Customer.objects.filter(
-            customer=self.request)
-        self.fields['message'].queryset = Message.objects.filter(
-            user=self.request)
+    # def __init__(self, *args, **kwargs):
+    #
+    #     self.request = kwargs.pop('request', None)
+    #
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['creator_id'].queryset = Customer.objects.filter(
+    #         creator=self.request)
+    #     self.fields['message'].queryset = Message.objects.filter(
+    #         user=self.request)

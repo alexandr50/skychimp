@@ -1,5 +1,7 @@
 {% extends 'user/base.html' %}
 
+{% block title %} {{ title }} {% endblock %}
+
 {%  block content %}
       <div class="container">
     <form action="{% url 'customer:update_customer' object.pk %}" method="post">
