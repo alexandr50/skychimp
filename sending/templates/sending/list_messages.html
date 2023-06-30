@@ -15,12 +15,12 @@
                         <div class="card-body">
 
 
-                           <p class="text-info">{{ object.content }}</p>
+                           <p class="bg-light">{{ object.content }}</p>
 
                             <a type="button" href="{% url 'sending:detail_message' object.id %}"
                                class="btn btn-lg btn-block btn-outline-primary">Детализация</a>
                              <a type="button" href="{% url 'sending:update_message' object.id %}"
-                               class="btn btn-lg btn-block btn-danger">Изменить</a>
+                               class="btn btn-lg btn-block btn-outline-danger">Изменить</a>
                         </div>
                     </div>
                 </div>

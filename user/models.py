@@ -6,6 +6,7 @@ from django.dispatch import receiver
 
 class User(AbstractUser):
     email = models.EmailField(max_length=30, unique=True)
+    verify_code = models.CharField(max_length=10, unique=True, verbose_name='Код верификации', default='some_code2')
 
 
     def __str__(self):

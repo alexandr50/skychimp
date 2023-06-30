@@ -13,23 +13,21 @@ class CreateCustomer(CreateView):
     model = Customer
     template_name = 'customer/create_customer.html'
     form_class = CustomerForm
-    success_url = 'customer:create_customer'
+    success_url = reverse_lazy('customer:list_customers')
     extra_context = {
         'title': 'Создание клиента'
     }
 
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(data=request.POST)
-        form.creator = self.request.user
+    def form_valid(self, form):
+        form = CustomerForm(data=self.request.POST)
         if form.is_valid():
-            customer = form
+            customer = form.save(commit=False)
+            customer.creator = self.get_object()
             customer.save()
-            return HttpResponseRedirect(reverse('customer:list_customers'))
-
-        return render(request, self.template_name)
+            return super().form_valid(form)
 
     def get_object(self, queryset=None):
-        creator = User.objects.get(pk=self.kwargs['pk'])
+        creator = User.objects.get(pk=self.request.user.pk)
         return creator
 
 class ListCustomers(ListView):

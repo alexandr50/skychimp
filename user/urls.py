@@ -1,6 +1,6 @@
 from django.urls import path
 
-from user.views import RegisterUser, LoginUser, ProfileUser, LogoutUser
+from user.views import RegisterUser, LoginUser, ProfileUser, LogoutUser, confirm_code
 
 app_name = 'user'
 
@@ -9,4 +9,5 @@ urlpatterns = [
     path('login', LoginUser.as_view(), name='login'),
     path('profile', ProfileUser.as_view(), name='profile'),
     path('logout', LogoutUser.as_view(), name='logout'),
+    path('confirm_code/<str:email>/', confirm_code, name='confirm_code'),
 ]

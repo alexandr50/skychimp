@@ -1,9 +1,10 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
-
-from sending.forms import MessageForm, CreateSendingForm
+from django.utils import timezone
+from sending.forms import MessageForm, CreateSendingForm, UpdateSendingForm
 from sending.models import Message, Sending
 from user.models import User
 
@@ -35,6 +36,7 @@ class ListMessages(ListView):
         'title': 'Список писем'
     }
 
+
 class DetailMessage(DetailView):
     model = Message
     template_name = 'sending/detail_message.html'
@@ -44,9 +46,11 @@ class DetailMessage(DetailView):
 
     def get_object(self, queryset=None):
         message = get_object_or_404(Message, pk=self.kwargs['pk'])
-        return message #Message.objects.get(pk=self.kwargs['pk'])
+        return message  # Message.objects.get(pk=self.kwargs['pk'])
 
-class UpdateMessage(UpdateView):
+
+class UpdateMessage(PermissionRequiredMixin, UpdateView):
+    permission_required = 'sending.change_message'
     model = Message
     template_name = 'sending/update_message.html'
     form_class = MessageForm
@@ -61,6 +65,7 @@ class UpdateMessage(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('sending:detail_message', kwargs={'pk': self.kwargs['pk']})
+
 
 class DeleteMessage(DeleteView):
     model = Message
@@ -80,11 +85,12 @@ class ListSending(ListView):
     def get_queryset(self):
         return Sending.objects.all()
 
+
 class CreateSending(CreateView):
     model = Sending
     template_name = 'sending/create_sending.html'
     form_class = CreateSendingForm
-    success_url = 'sending:list_sending'
+    success_url = reverse_lazy('sending:list_sending')
     extra_context = {
         'title': 'Создание рассылки'
     }
@@ -94,33 +100,41 @@ class CreateSending(CreateView):
             self.object = form.save(commit=False)
             self.object.user = self.request.user
             self.object.save()
-        # super().form_valid(form)
-            return HttpResponseRedirect(reverse('sending:list_sending'))
+            return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request.user})
+        return kwargs
 
-    # def post(self, request, *args, **kwargs):
-    #     form = CreateSendingForm(data=request.POST)
-    #     if form.is_valid():
-    #         sending = form.save(commit=False)
-    #         sending.user = self.request.user
-    #         sending.save()
-    #         return HttpResponseRedirect(reverse('sending:list_sending'))
-    #
-    #     return render(request, self.template_name)
 
-    def get_object(self, queryset=None):
-        user = User.objects.get(pk=self.kwargs['pk'])
-        return user
+class UpdateSendingView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'sending.change_sending'
+    model = Sending
+    template_name = 'sending/update_sending.html'
+    form_class = UpdateSendingForm
+    extra_context = {
+        'title': 'Обновление информации о рассылке'
+    }
 
-    # def get_form_kwargs(self):
-    #     kwargs = super().get_form_kwargs()
-    #     kwargs.update({'request': self.request.user})
-    #     return kwargs
+    def form_valid(self, form):
+        if self.request.method == 'POST':
+            form = UpdateSendingForm(data=self.request.POST, instance=self.request.user)
+            if form.is_valid():
+                form.instance = self.object
+                form.updated_at = timezone.now()
+                form.save()
+        else:
+            form = UpdateSendingForm(instance=self.request.user)
 
-class DetailSending(DetailView):
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('sending:detail_sending', kwargs={'pk': self.kwargs['pk']})
+
+
+class DetailSending(PermissionRequiredMixin, DetailView):
+    permission_required = 'sendind.view_sending'
     model = Sending
     template_name = 'sending/detail_sending.html'
     extra_context = {
@@ -132,4 +146,11 @@ class DetailSending(DetailView):
         return sending
 
 
+class DeleteSendingView(DeleteView):
+    model = Sending
+    extra_context = {
+        'title': 'Удаление рассылки'
+    }
 
+    def get_success_url(self):
+        return reverse_lazy('sending:list_sending')

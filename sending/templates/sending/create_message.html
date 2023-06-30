@@ -5,6 +5,7 @@
 {% block content %}
 
       <div class="container">
+      <h4 class="text-lg-start">Создание письма</h4>
     <form action="{% url 'sending:create_message' %}" method="post">
         {% csrf_token %}
 

@@ -4,6 +4,7 @@
 
 {%  block content %}
     <div class="container">
+    <h1 class="text-body">Список рассылок</h1>
  {% for object in object_list %}
    <div class="row text-center">
                 <div class="col-6">
@@ -15,7 +16,7 @@
                         <div class="card-body">
 
 
-                           <ul class="list-unstyled mt-3 mb-4 text-start m-3 bg-info" >
+                           <ul class="list-unstyled mt-3 mb-4 text-start m-3 bg-light" >
                                 <li>Время: {{ object.time_sending}}</li>
                                 <li>Интервал: {{ object.interval}}</li>
                                 <li>Статус: {{ object.status_sending}}</li>
@@ -24,8 +25,8 @@
 
                             <a type="button" href="{% url 'sending:detail_sending' object.id %}"
                                class="btn btn-lg btn-block btn-outline-primary">Детализация</a>
-{#                             <a type="button" href="{% url 'sending:update_message' object.id %}"#}
-{#                               class="btn btn-lg btn-block btn-danger">Изменить</a>#}
+                             <a type="button" href="{% url 'sending:update_sending' object.id %}"
+                               class="btn btn-lg btn-block btn-outline-danger">Изменить</a>
                         </div>
                     </div>
                 </div>
