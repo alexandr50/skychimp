@@ -6,7 +6,11 @@ admin.site.register(Message)
 @admin.register(Sending)
 class SendingAdmin(admin.ModelAdmin):
 
-    list_display = ('user', 'get_customer', 'message', 'created_at', 'updated_at', 'interval', 'status_sending', 'start_sending', 'end_sending')
-    readonly_fields = ('user', 'created_at', 'updated_at')
+    list_display = ('user', 'get_customer', 'message', 'created_at', 'updated_at',
+                'interval', 'status_sending', 'start_sending_date', 'start_sending_time')
+    readonly_fields = ('created_at', 'updated_at')
 
-admin.site.register(TrySending)
+@admin.register(TrySending)
+class SendingAdmin(admin.ModelAdmin):
+    list_display = ('sending', 'last_attempt', 'status_attempt', 'answer_server')
+    readonly_fields = ('sending', 'last_attempt', 'status_attempt', 'answer_server')

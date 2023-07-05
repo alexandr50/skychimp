@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'user',
     'customer',
     'sending',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -111,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -147,32 +148,8 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
 
-REGULARITY = {
-    'one_a_day': '',
-    'one_a_week':  'р',
-    'one_a_month': ''
-}
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'custom_command_file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'custom_command.log',
-            'formatter': 'verbose',
-        },
-    },
-    'formatters': {
-        'verbose': {
-            'format': '%(asctime)s %(levelname)s %(message)s',
-        },
-    },
-    'loggers': {
-        'custom_command': {
-            'handlers': ['custom_command_file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
-}
+
+CRONJOBS = [
+    ('*/1 * * * *', 'sending.cron.sending_mail'),
+
+]
