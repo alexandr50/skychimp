@@ -15,7 +15,7 @@ from user.models import User
 
 
 def sending_mail():
-    query_sending = Sending.objects.exclude(status_sending='завершена') \
+    query_sending = Sending.objects.exclude(status_sending=Sending.COMPLITED) \
         .filter(start_sending_date=date.today()) \
         .filter(start_sending_time__lte=time(*list(map(int, datetime.now().time().strftime("%H:%M:%S").split(':')))))
     # .filter(next_run=timezone.now())
@@ -40,7 +40,6 @@ def sending_mail():
                                           status_attempt='success',
                                           answer_server='ok')
                 sending.start_sending_date = install_nex_date(sending)
-                sending.status_sending = Sending.COMPLITED
                 sending.save()
         except Exception as error:
             TrySending.objects.create(sending=sending,

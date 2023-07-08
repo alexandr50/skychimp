@@ -5,37 +5,37 @@ from django.dispatch import receiver
 
 
 class User(AbstractUser):
-    email = models.EmailField(max_length=30, unique=True)
-    verify_code = models.CharField(max_length=10, unique=True, verbose_name='Код верификации', default='some_code2')
+    username = None
+    email = models.EmailField(max_length=30, unique=True, verbose_name='Почта')
+    verify_code = models.CharField(max_length=10, unique=True, verbose_name='Код верификации')
+    avatar = models.ImageField(upload_to='users', verbose_name='аватар', blank=True, null=True)
+    phone = models.CharField(max_length=20, verbose_name='Номер телефона', blank=True, null=True)
+    is_active = models.BooleanField(default=False)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.username
+        return f'{self.email}'
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
+        permissions = {
+            ('can_blocked_user', 'Can blocked user')
+        }
 
-class UserProfile(models.Model):
-    MALE = 'M'
-    FEMALE = 'W'
+# class User(AbstractUser):
+#     email = models.EmailField(max_length=30, unique=True)
+#     verify_code = models.CharField(max_length=10, unique=True, verbose_name='Код верификации', default='some_code2')
+#
+#
+#     def __str__(self):
+#         return self.username
+#
+#     class Meta:
+#         verbose_name = 'Пользователь'
+#         verbose_name_plural = 'Пользователи'
 
-    GENDER_CHOICES = (
-        (MALE, 'м'),
-        (FEMALE, 'ж'),
-    )
-    user = models.OneToOneField(User, unique=True, null=True, db_index=True, on_delete=models.CASCADE)
-    about = models.TextField(verbose_name='о себе', blank=True, null=False)
-    gender = models.CharField(verbose_name='пол', choices=GENDER_CHOICES, blank=True, max_length=2)
-    langs = models.CharField(verbose_name='язык', blank=True, max_length=25, default='RU')
 
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            UserProfile.objects.create(user=instance)
-
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, created, **kwargs):
-        if not created:
-            instance.userprofile.save()

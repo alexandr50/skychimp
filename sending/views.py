@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from customer.models import Customer
 from sending.cron import sending_mail
-from sending.forms import MessageForm, CreateSendingForm, UpdateSendingForm
+from sending.forms import MessageForm, CreateSendingForm, UpdateSendingForm, DisableSendingForm
 from sending.models import Message, Sending
 from skychimp import settings
 from user.models import User
@@ -45,11 +45,13 @@ class ListMessages(ListView):
 
 
 class DetailMessage(DetailView):
+    # permission_required = 'message.can_view_message'
     model = Message
     template_name = 'sending/detail_message.html'
     extra_context = {
         'title': 'Информация о письме'
     }
+
 
     def get_object(self, queryset=None):
         message = get_object_or_404(Message, pk=self.kwargs['pk'])
@@ -89,9 +91,10 @@ class ListSending(ListView):
         'title': 'Список рассылок'
     }
 
+
     def get_queryset(self):
-        global result
-        query_sending = Sending.objects.exclude(status_sending='завершена')
+        # global result
+        # query_sending = Sending.objects.exclude(status_sending='завершена')
         #     .filter(start_sending=timezone.now()) \
         #     .filter(next_run=timezone.now())
         # print(1)
@@ -111,22 +114,36 @@ class ListSending(ListView):
         #     print('--------------')
         #     print(sending.start_sending_date == date.today())
         #     print(sending.start_sending_time == my_time)
-        s = Customer.objects.get(first_name='liza')
-        try:
-            result = send_mail(
-                subject='Sending',
-                message='Вам письмо',
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[s.email],
-                # fail_silently=False
-            )
-            print(result)
-            print(s.email)
-        except Exception as err:
+        # s = Customer.objects.get(first_name='liza')
+        # try:
+        #     result = send_mail(
+        #         subject='Sending',
+        #         message='Вам письмо',
+        #         from_email=settings.EMAIL_HOST_USER,
+        #         recipient_list=[s.email],
+        #         # fail_silently=False
+        #     )
+        #     print(result)
+        #     print(s.email)
+        # except Exception as err:
+        #
+        #     print(err)
 
-            print(err)
+        return Sending.objects.filter(user=self.request.user)
 
-        return Sending.objects.all()
+class DisableSendingView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'sending.can_disable_sending'
+    model = Sending
+    form_class = DisableSendingForm
+    success_url = reverse_lazy('sending:list_sending')
+    template_name = 'sending/disable.html'
+
+    def post(self, request, *args, **kwargs):
+        if self.request.method == 'POST':
+            sending_object = Sending.objects.get(id=kwargs['pk'])
+            sending_object.status_sending = Sending.COMPLITED
+            sending_object.save()
+            return HttpResponseRedirect(reverse('sending:list_sending'))
 
 
 class CreateSending(CreateView):
@@ -177,7 +194,7 @@ class UpdateSendingView(PermissionRequiredMixin, UpdateView):
 
 
 class DetailSending(PermissionRequiredMixin, DetailView):
-    permission_required = 'sendind.view_sending'
+    permission_required = 'sending.can_view_sending'
     model = Sending
     template_name = 'sending/detail_sending.html'
     extra_context = {

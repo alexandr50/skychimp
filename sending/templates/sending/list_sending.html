@@ -2,11 +2,11 @@
 
 {% block title %} {{ title }} {% endblock %}
 
-{%  block content %}
+{% block content %}
     <div class="container">
-    <h1 class="text-body">Список рассылок</h1>
- {% for object in object_list %}
-   <div class="row text-center">
+        <h1 class="text-body">Список рассылок</h1>
+        {% for object in object_list %}
+            <div class="row text-center">
                 <div class="col-6">
                     <div class="card mb-4 box-shadow">
                         <div class="card-header">
@@ -16,21 +16,27 @@
                         <div class="card-body">
 
 
-                           <ul class="list-unstyled mt-3 mb-4 text-start m-3 bg-light" >
-                                <li>Время: {{ object.time_sending}}</li>
-                                <li>Интервал: {{ object.interval}}</li>
-                                <li>Статус: {{ object.status_sending}}</li>
+                            <ul class="list-unstyled mt-3 mb-4 text-start m-3 bg-light">
+                                <li>Время: {{ object.time_sending }}</li>
+                                <li>Интервал: {{ object.interval }}</li>
+                                <li>Статус: {{ object.status_sending }}</li>
 
                             </ul>
 
                             <a type="button" href="{% url 'sending:detail_sending' object.id %}"
                                class="btn btn-lg btn-block btn-outline-primary">Детализация</a>
-                             <a type="button" href="{% url 'sending:update_sending' object.id %}"
-                               class="btn btn-lg btn-block btn-outline-danger">Изменить</a>
+                            {% if perms.sending.can_change_sending %}
+                                <a type="button" href="{% url 'sending:update_sending' object.id %}"
+                                   class="btn btn-lg btn-block btn-outline-danger">Изменить</a>
+                            {% endif %}
+                            {% if object.status_sending != 'Завершена' %}
+                                <a type="button" href="{% url 'sending:disable_sending' object.id %}"
+                                   class="btn btn-lg btn-block btn-outline-danger">Отключить рассылку</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-    {% endfor %}
+        {% endfor %}
     </div>
 {% endblock %}

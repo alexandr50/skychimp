@@ -1,7 +1,8 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DeleteView, ListView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
@@ -9,7 +10,7 @@ from django.views.generic import CreateView
 from django.contrib import messages
 
 from skychimp import settings
-from user.forms import UserRegisterForm, UserLoginForm, UserProfileForm, UserProfileEditForm
+from user.forms import UserRegisterForm, UserProfileForm, UserBlockedForm
 from user.mixin import BaseClassContextMixin, UserDispatchMixin
 from user.models import User
 from user.utils import generate_code
@@ -42,6 +43,7 @@ class RegisterUser(CreateView):
 
         return super().form_valid(form)
 
+
 def confirm_code(request, email):
     if request.method == 'POST':
         verify_code = request.POST.get('verify_code')
@@ -59,17 +61,8 @@ def confirm_code(request, email):
 
 
 
-class LoginUser(LoginView):
-    model = User
-    form_class = UserLoginForm
-    template_name = 'user/login.html'
-    success_url = reverse_lazy('user:profile')
-    extra_context = {
-        'title': 'Авторизация'
-    }
 
-
-class ProfileUser(UpdateView, BaseClassContextMixin, UserDispatchMixin):
+class ProfileUser(UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'user/profile.html'
@@ -78,18 +71,17 @@ class ProfileUser(UpdateView, BaseClassContextMixin, UserDispatchMixin):
         'title': 'Профиль'
     }
 
+    def get_success_url(self):
+        return reverse_lazy('user:profile', kwargs={'pk': self.kwargs['pk']})
+
     def post(self, request, *args, **kwargs):
-        form = UserProfileForm(data=request.POST, instance=request.user)
-        # profile_form = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
+        form = UserProfileForm(data=request.POST, instance=request.user, files=request.FILES)
         if form.is_valid():
             form.save()
         return redirect(self.success_url)
 
-
     def get_object(self, queryset=None):
-
         return User.objects.get(id=self.request.user.pk)
-
 
     def form_valid(self, form):
         messages.set_level(self.request, messages.SUCCESS)
@@ -98,8 +90,34 @@ class ProfileUser(UpdateView, BaseClassContextMixin, UserDispatchMixin):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class LogoutUser(LogoutView):
-    template_name = 'user/login.html'
+class DeleteUserView(DeleteView):
+    model = User
+    success_url = reverse_lazy('user:login')
+
+
+class ListUsersView(ListView):
+    model = User
+    template_name = 'user/list_users.html'
     extra_context = {
-        'title': 'Выход'
+        'title': 'Список пользователей сервиса'
     }
+
+    def get_queryset(self):
+        return User.objects.all()
+
+
+class BlockUser(PermissionRequiredMixin, UpdateView):
+    permission_required = 'user.can_blocked_user'
+    model = User
+    form_class = UserBlockedForm
+    template_name = 'user/block_user.html'
+    extra_context = {
+        'title': 'Блокировка пользователя'
+    }
+
+    def post(self, request, *args, **kwargs):
+        if self.request.method == 'POST':
+            user_object = User.objects.get(id=kwargs['pk'])
+            user_object.is_active = False
+            user_object.save()
+            return HttpResponseRedirect(reverse('user:list_users'))

@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 
 from django.http import HttpResponseRedirect
@@ -30,13 +31,15 @@ class CreateCustomer(CreateView):
         creator = User.objects.get(pk=self.request.user.pk)
         return creator
 
-class ListCustomers(ListView):
+class ListCustomers(PermissionRequiredMixin, ListView):
+    permission_required = 'customer.view_customer'
     model = Customer
     template_name = 'customer/list_customers.html'
     extra_context = {
         'title': 'Список клиентов'
     }
-
+    def get_queryset(self):
+        return Customer.objects.filter(creator=self.request.user)
 
 class DetailCustomer(DetailView):
     model = Customer

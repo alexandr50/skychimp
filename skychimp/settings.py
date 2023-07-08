@@ -14,13 +14,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
-PASSWORD_YANDEX = os.environ.get('PASSWORD_YANDEX')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -84,8 +82,12 @@ WSGI_APPLICATION = 'skychimp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('NAME_DB'),
+        'USER': os.getenv('USER_DB'),
+        'PASSWORD': os.getenv('PASSWORD'),
+        'HOST': os.getenv('HOST_DB'),
+        'PORT': os.getenv('PORT_DB'),
     }
 }
 
@@ -110,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -135,15 +137,15 @@ AUTH_USER_MODEL = 'user.User'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-LOGIN_REDIRECT_URL = '/user/profile'
+LOGIN_REDIRECT_URL = '/sending/list_sending'
+LOGOUT_REDIRECT_URL = '/user/login'
 
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
+LOGOUT_URL = '/user/logout'
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_HOST_USER = 'alexand5051987@yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_PASSWORD = PASSWORD_YANDEX
+EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_YANDEX')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 

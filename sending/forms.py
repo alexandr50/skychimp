@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django import forms
-from django.contrib.auth.forms import UserChangeForm
 from django.forms import DateTimeInput
 
 from customer.models import Customer
@@ -21,51 +20,9 @@ class MessageForm(forms.ModelForm):
 
 
 class CreateSendingForm(forms.ModelForm):
-    # customer = forms.ModelMultipleChoiceField(
-    #     queryset=Customer.objects.all(),
-    #     empty_label='all',
-    #     widget=forms.Select(attrs={'class': 'radioselect'}), required=False, label='Клиент')
-
-    #
-    # message = forms.ChoiceField(
-    #     choices=[(message, message.theme) for message in Message.objects.all()],
-    #     widget=forms.Select(attrs={'class': 'form-select', 'placeholder': 'Письмо'}))
-    #
-    # interval = forms.ChoiceField(choices=Sending.INTERVAL,
-    #                              widget=forms.Select(attrs={'class': 'form-select', 'placeholder': 'Интервал'}))
-    # status_sending = forms.ChoiceField(choices=Sending.STATUS,
-    #                                    widget=forms.Select(attrs={'class': 'form-select', 'placeholder': 'Стaтус'}))
-
-    # time_sending = forms.DateTimeField(
-    #     required=False,
-    #     widget=DateTimeInput(attrs={'type': 'datetime-local'}),
-    #     initial=datetime.now(),
-    #     localize=True
-    # )
-
-    start_sending = forms.DateTimeField(
-        required=False,
-        widget=DateTimeInput(attrs={'type': 'datetime-local'}),
-        initial=datetime.now(),
-        localize=True
-    )
-    end_sending = forms.DateTimeField(
-        required=False,
-        widget=DateTimeInput(attrs={'type': 'datetime-local'}),
-        initial=datetime.now(),
-        localize=True
-    )
-
     class Meta:
         model = Sending
         exclude = ('user',)
-
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     for field_name, field in self.fields.items():
-    #         field.widget.attrs['class'] = 'form-control'
-
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -77,20 +34,13 @@ class CreateSendingForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
 
 
+class DisableSendingForm(forms.ModelForm):
+
+    class Meta:
+        model = Sending
+        fields = ('status_sending',)
+
 class UpdateSendingForm(forms.ModelForm):
-    
-    start_sending = forms.DateTimeField(
-        required=False,
-        widget=DateTimeInput(attrs={'type': 'datetime-local'}),
-        initial=datetime.now(),
-        localize=True
-    )
-    end_sending = forms.DateTimeField(
-        required=False,
-        widget=DateTimeInput(attrs={'type': 'datetime-local'}),
-        initial=datetime.now(),
-        localize=True
-    )
 
     class Meta:
         model = Sending
@@ -100,9 +50,5 @@ class UpdateSendingForm(forms.ModelForm):
         super(UpdateSendingForm, self).__init__(*args, **kwargs)
         self.fields['user'].widget.attrs['readonly'] = True
 
-        # self.fields['created_at'].widget.attrs['readonly'] = True
-
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-
-

@@ -1,11 +1,10 @@
-from datetime import datetime
+from datetime import datetime, time
 
 from django.db import models
 from django.utils import timezone
 
 from customer.models import Customer
 from user.models import User
-
 
 
 class Message(models.Model):
@@ -19,9 +18,16 @@ class Message(models.Model):
     class Meta:
         verbose_name = 'Сообщение'
         verbose_name_plural = 'Сообщения'
+        #
+        # permissions = [
+        #     (
+        #         'can_view_message',
+        #         'Can view message'
+        #     )
+        # ]
+
 
 class Sending(models.Model):
-
     ONE_A_DAY = 'раз в день'
     ONE_A_WEEK = 'раз в неделю'
     ONE_A_MONTH = 'раз в месяц'
@@ -50,23 +56,29 @@ class Sending(models.Model):
     interval = models.CharField(choices=INTERVAL, max_length=30, verbose_name='Периодичность')
     status_sending = models.CharField(choices=STATUS, max_length=30, verbose_name='Статус')
     start_sending_date = models.DateField(default=datetime.today(), verbose_name='Дата начала')
-    start_sending_time = models.TimeField(verbose_name='время рассылки', blank=True, null=True)
-
-
-
-
-
+    start_sending_time = models.TimeField(default=datetime.now().time(), verbose_name='время рассылки', blank=True,
+                                          null=True)
 
     class Meta:
         verbose_name = 'Рассылка'
         verbose_name_plural = 'Рассылки'
+
+        permissions = [
+            (
+                'can_view_sending',
+                'Can view sending'
+            ),
+            (
+                'can_disable_sending',
+                'Can disable sending'
+            )
+        ]
 
     def get_customer(self):
         return ','.join([str(cus) for cus in self.customer.all()])
 
 
 class TrySending(models.Model):
-
     STATUS_CHOICES = [
         ('success', 'завершена'),
         ('failure', 'провалена'),
@@ -75,13 +87,10 @@ class TrySending(models.Model):
 
     sending = models.ForeignKey(Sending, on_delete=models.CASCADE, verbose_name='Письмо', blank=True, null=True)
     last_attempt = models.DateTimeField(auto_now_add=True, verbose_name='Дата последней попытки')
-    status_attempt = models.CharField(choices=STATUS_CHOICES, max_length=30, default='in_progress', verbose_name='Текущий статус')
+    status_attempt = models.CharField(choices=STATUS_CHOICES, max_length=30, default='in_progress',
+                                      verbose_name='Текущий статус')
     answer_server = models.CharField(max_length=20, verbose_name='Ответ почтового сервера')
-
 
     class Meta:
         verbose_name = 'Попытка рассылки'
         verbose_name_plural = 'Попытки рассылок'
-
-
-

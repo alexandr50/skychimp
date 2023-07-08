@@ -15,3 +15,7 @@ class Customer(models.Model):
     class Meta:
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
+
+        permissions = {
+            ('can_veiw_customers', 'Can view customers')
+        }
