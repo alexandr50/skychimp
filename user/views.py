@@ -1,18 +1,17 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.views.generic import UpdateView, DeleteView, ListView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
-from django.contrib import messages
+from django.views.generic import UpdateView, DeleteView, ListView
 
 from skychimp import settings
 from user.forms import UserRegisterForm, UserProfileForm, UserBlockedForm
-from user.mixin import BaseClassContextMixin, UserDispatchMixin
 from user.models import User
+from user.services import get_users
 from user.utils import generate_code
 
 
@@ -60,8 +59,6 @@ def confirm_code(request, email):
     return render(request, 'user/confirm_code.html', context)
 
 
-
-
 class ProfileUser(UpdateView):
     model = User
     form_class = UserProfileForm
@@ -103,7 +100,7 @@ class ListUsersView(ListView):
     }
 
     def get_queryset(self):
-        return User.objects.all()
+        return get_users()
 
 
 class BlockUser(PermissionRequiredMixin, UpdateView):

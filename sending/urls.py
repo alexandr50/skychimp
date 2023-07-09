@@ -2,7 +2,7 @@
 from django.urls import path
 
 from sending.views import CreateMessage, DetailMessage, ListMessages, UpdateMessage, DeleteMessage, ListSending, \
-    CreateSending, DetailSending, UpdateSendingView, DeleteSendingView, DisableSendingView
+    CreateSending, DetailSending, UpdateSendingView, DeleteSendingView, DisableSendingView, ListTrySending
 
 app_name = 'sending'
 
@@ -18,5 +18,6 @@ urlpatterns = [
     path('detail_sending/<int:pk>/', DetailSending.as_view(), name='detail_sending'),
     path('update_sending/<int:pk>/', UpdateSendingView.as_view(), name='update_sending'),
     path('disable_sending/<int:pk>/', DisableSendingView.as_view(), name='disable_sending'),
+    path('list_try_sending/', ListTrySending.as_view(), name='list_try_sending'),
 
 ]

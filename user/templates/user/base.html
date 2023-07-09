@@ -13,6 +13,11 @@
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
     <div class="container-fluid">
+     <a class="navbar-brand" href="{% url 'blog:index' %}">Главная {% now "D d M Y" %} </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
 
         <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
@@ -40,6 +45,7 @@
                             </li>
                             <li><a class="dropdown-item" href="{% url 'sending:list_sending' %}">Список рассылок</a>
                             </li>
+                            <li><a class="dropdown-item" href="{% url 'sending:list_try_sending' %}">Отчеты о рассылках</a></li>
 
                         </ul>
                     </li>
@@ -54,9 +60,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="p-2 btn btn-outline-light" href="{% url 'user:list_users' %}">Список пользователей</a>
-                    </li>
+
                      <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">{{ user.email }}</a>
                         <ul class="dropdown-menu">
@@ -67,12 +71,15 @@
 
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="p-2 btn btn-outline-light" href="{% url 'user:list_users' %}">Список пользователей</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="p-2 btn btn-outline-light" href="{% url 'blog:list_posts' %}">Блог</a>
+                    </li>
                     </ul>
 
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
+
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'user:login' %}">Авторизациия</a>
@@ -92,48 +99,11 @@
 {% endblock %}
 <div class="container">
     <footer class="py-3 my-4">
-{#        <ul class="nav justify-content-center border-bottom pb-3 mb-3">#}
-{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>#}
-{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>#}
-{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>#}
-{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>#}
-{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>#}
-{#        </ul>#}
+
         <p class="text-center text-muted">&copy; 2023 Sky Learning</p>
     </footer>
 </div>
 
-{##}
-{#<footer class="pt-4 my-md-5 pt-md-5 border-top">#}
-{#    <div class="row">#}
-{#        <div class="col-12 col-md">#}
-{#            SkyStore#}
-{#            <small class="d-block mb-3 text-muted">&copy; 2023</small>#}
-{#        </div>#}
-{#        <div class="col-6 col-md">#}
-{#            <h5>Категории</h5>#}
-{#            <ul class="list-unstyled text-small">#}
-{#                <li><a class="text-muted" href="#">Рассылки</a></li>#}
-{#                <li><a class="text-muted" href="#">Телеграм боты</a></li>#}
-{#                <li><a class="text-muted" href="#">Полезные утилиты</a></li>#}
-{#                <li><a class="text-muted" href="#">Веб-приложения</a></li>#}
-{#                <li><a class="text-muted" href="#">Микросервисы</a></li>#}
-{#            </ul>#}
-{#        </div>#}
-{#        <div class="col-6 col-md">#}
-{#            <h5>Дополнительно</h5>#}
-{#            <ul class="list-unstyled text-small">#}
-{#                <li><a class="text-muted" href="#">Мы пишем</a></li>#}
-{#            </ul>#}
-{#        </div>#}
-{#        <div class="col-6 col-md">#}
-{#            <h5>О нас</h5>#}
-{#            <ul class="list-unstyled text-small">#}
-{#                <li><a class="text-muted" href="/contacts/">Контакты</a></li>#}
-{#            </ul>#}
-{#        </div>#}
-{#    </div>#}
-{#</footer>#}
 
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>

@@ -24,7 +24,7 @@
             <form action="{% url 'user:profile' %} " method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="img-fluid">
-                    <img width="150" height="200"
+                    <img width="150" height="150"
                          src="{% if user.avatar %} {{ user.avatar.url }} {% else %}Нет аватара{% endif %}"
 
                          class="rounded float-right">

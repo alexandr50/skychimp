@@ -38,6 +38,8 @@
         <div class="form-group mt-4 mb-0">
             <input class="btn btn-primary btn-block" type="submit" value="Изменить данные">
         </div>
+        <a type="button" href="{% url 'customer:delete_customer' object.id %}"
+                               class="btn btn-lg btn-block btn-danger">Удалить</a>
     </form>
     </div>
 {% endblock %}

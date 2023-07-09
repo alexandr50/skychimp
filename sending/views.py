@@ -1,19 +1,12 @@
-from datetime import datetime, date, time
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from django.utils import timezone
+from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 
-from customer.models import Customer
-from sending.cron import sending_mail
 from sending.forms import MessageForm, CreateSendingForm, UpdateSendingForm, DisableSendingForm
-from sending.models import Message, Sending
-from skychimp import settings
-from user.models import User
+from sending.models import Message, Sending, TrySending
 
 
 class CreateMessage(CreateView):
@@ -51,7 +44,6 @@ class DetailMessage(DetailView):
     extra_context = {
         'title': 'Информация о письме'
     }
-
 
     def get_object(self, queryset=None):
         message = get_object_or_404(Message, pk=self.kwargs['pk'])
@@ -91,45 +83,13 @@ class ListSending(ListView):
         'title': 'Список рассылок'
     }
 
-
     def get_queryset(self):
-        # global result
-        # query_sending = Sending.objects.exclude(status_sending='завершена')
-        #     .filter(start_sending=timezone.now()) \
-        #     .filter(next_run=timezone.now())
-        # print(1)
-        # with open('file.txt', 'w') as file:
-        #     file.write(f'mjgndjkd')
-        #
 
-        # for sending in query_sending:
-        #     print(sending.start_sending_date)
-        #     print(sending.start_sending_time)
-        #     print(type(sending.start_sending_time))
-        #     print(sending.next_run)
-        #     print(date.today())
-        #     print(datetime.now().time().strftime("%H:%M:%S"))
-        #     my_time = time(*list(map(int, datetime.now().time().strftime("%H:%M:%S").split(':'))))
-        #     print(type(my_time))
-        #     print('--------------')
-        #     print(sending.start_sending_date == date.today())
-        #     print(sending.start_sending_time == my_time)
-        # s = Customer.objects.get(first_name='liza')
-        # try:
-        #     result = send_mail(
-        #         subject='Sending',
-        #         message='Вам письмо',
-        #         from_email=settings.EMAIL_HOST_USER,
-        #         recipient_list=[s.email],
-        #         # fail_silently=False
-        #     )
-        #     print(result)
-        #     print(s.email)
-        # except Exception as err:
-        #
-        #     print(err)
+        if not self.request.user.has_perm('sending.can_view_sending'):
+            return Sending.objects.filter(user=self.request.user)
+        else:
+            return Sending.objects.all()
 
-        return Sending.objects.filter(user=self.request.user)
 
 class DisableSendingView(PermissionRequiredMixin, UpdateView):
     permission_required = 'sending.can_disable_sending'
@@ -214,3 +174,14 @@ class DeleteSendingView(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('sending:list_sending')
+
+
+class ListTrySending(ListView):
+    model = TrySending
+    template_name = 'sending/list_try_sending.html'
+    extra_context = {
+        'title': 'Статистика по рассылкам'
+    }
+
+    def get_queryset(self):
+        return TrySending.objects.all()

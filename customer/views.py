@@ -1,12 +1,10 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.urls import reverse_lazy, reverse
-
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
 from customer.forms import CustomerForm, UpdateCustomerForm
 from customer.models import Customer
+from customer.services import get_customers
 from user.models import User
 
 
@@ -31,15 +29,18 @@ class CreateCustomer(CreateView):
         creator = User.objects.get(pk=self.request.user.pk)
         return creator
 
-class ListCustomers(PermissionRequiredMixin, ListView):
-    permission_required = 'customer.view_customer'
+class ListCustomers(ListView):
+
     model = Customer
     template_name = 'customer/list_customers.html'
     extra_context = {
         'title': 'Список клиентов'
     }
     def get_queryset(self):
-        return Customer.objects.filter(creator=self.request.user)
+        if self.request.user.has_perm('customer.can_view_customers'):
+            return get_customers()
+        else:
+            return Customer.objects.filter(creator=self.request.user)
 
 class DetailCustomer(DetailView):
     model = Customer
@@ -72,4 +73,9 @@ class UpdateCustomer(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('customer:detail_customer', kwargs={'pk': self.kwargs['pk']})
+
+
+class DeleteCustomerView(DeleteView):
+    model = Customer
+    success_url = reverse_lazy('customer:list_customers')
 

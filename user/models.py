@@ -1,7 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
 class User(AbstractUser):
@@ -26,16 +24,5 @@ class User(AbstractUser):
             ('can_blocked_user', 'Can blocked user')
         }
 
-# class User(AbstractUser):
-#     email = models.EmailField(max_length=30, unique=True)
-#     verify_code = models.CharField(max_length=10, unique=True, verbose_name='Код верификации', default='some_code2')
-#
-#
-#     def __str__(self):
-#         return self.username
-#
-#     class Meta:
-#         verbose_name = 'Пользователь'
-#         verbose_name_plural = 'Пользователи'
 
 
