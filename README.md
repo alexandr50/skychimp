@@ -47,7 +47,13 @@
 
 
 Создание superuser:
-  python manage.py create_user_command
+      python manage.py create_user_command
+
+
+Технологии и стек:
+
+        python, django, python-dotenv, django-crontab, psycopg2-binary, redis
+
 
 
 
