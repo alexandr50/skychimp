@@ -38,6 +38,9 @@
         Дополнительно в Manager menu интерфейса реализован CRUD для модели User
         Дополнительно в Manager menu реализована возможность настраивать расписания рассылок (ONE_A_DAY, ONE_A_WEEK, ONE_A_MONTH)
 
+
 Создание superuser:
   python manage.py create_user_command
+
+Запуск проэкта из терминала python manage.py runserver
 
