@@ -8,8 +8,12 @@
         Установить настройки, указанные в env.sample
         Убедиться, что механизм cron запущен - python manage.py crontab show, python manage.py crontab add, при необходимости.
 
-Запуск проэкта из терминала:
-        python manage.py runserver
+Запуск проэкта
+
+    1. Установите зависимости команондой poetry install
+    2. Заполните файл .env про примеру env.sample
+    3. Из терминала командой python manage.py runserver запустите проект
+
 
 Сущности системы
 
