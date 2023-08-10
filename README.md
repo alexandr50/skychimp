@@ -8,6 +8,9 @@
         Установить настройки, указанные в env.sample
         Убедиться, что механизм cron запущен - python manage.py crontab show, python manage.py crontab add, при необходимости.
 
+Запуск проэкта из терминала:
+        python manage.py runserver
+
 Сущности системы
 
     Приложение sending
@@ -42,5 +45,5 @@
 Создание superuser:
   python manage.py create_user_command
 
-Запуск проэкта из терминала python manage.py runserver
+
 
