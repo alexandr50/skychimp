@@ -53,6 +53,8 @@ class DetailCustomer(DetailView):
         return Customer.objects.get(id=self.kwargs['pk'])
 
 class UpdateCustomer(UpdateView):
+    """Обновление клиента"""
+
     model = Customer
     template_name = 'customer/update_customer.html'
     form_class = UpdateCustomerForm
