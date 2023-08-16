@@ -9,6 +9,7 @@ from user.models import User
 
 
 class CreateCustomer(CreateView):
+    """Создание клиента"""
     model = Customer
     template_name = 'customer/create_customer.html'
     form_class = CustomerForm
