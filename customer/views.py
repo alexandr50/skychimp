@@ -31,7 +31,7 @@ class CreateCustomer(CreateView):
         return creator
 
 class ListCustomers(ListView):
-
+    """Просмотр списка клиентов"""
     model = Customer
     template_name = 'customer/list_customers.html'
     extra_context = {
