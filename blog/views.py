@@ -17,6 +17,8 @@ class PostDetailView(DetailView):
     template_name = 'blog/detail_post.html'
 
     def get_object(self, queryset=None):
+        """Счетчик просмотров"""
+
         object = Blog.objects.get(pk=self.kwargs['pk'])
         if object:
             object.count_views += 1
@@ -24,6 +26,7 @@ class PostDetailView(DetailView):
         return object
 
 def index(request):
+    """Главная страница: 3 поста,количество рассылок, активных рассылок, все клиенты"""
     context = {
         'posts': get_posts()[:3],
         'title': 'Главная страница',
