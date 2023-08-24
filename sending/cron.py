@@ -8,6 +8,7 @@ from skychimp import settings
 
 
 def sending_mail():
+    """реализация рассылки писем по расписаню"""
     query_sending = Sending.objects.exclude(status_sending=Sending.COMPLITED) \
         .filter(start_sending_date=date.today()) \
         .filter(start_sending_time__lte=time(*list(map(int, datetime.now().time().strftime("%H:%M:%S").split(':')))))
