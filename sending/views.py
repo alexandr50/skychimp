@@ -38,7 +38,7 @@ class ListMessages(ListView):
 
 
 class DetailMessage(DetailView):
-    # permission_required = 'message.can_view_message'
+
     model = Message
     template_name = 'sending/detail_message.html'
     extra_context = {
@@ -47,7 +47,7 @@ class DetailMessage(DetailView):
 
     def get_object(self, queryset=None):
         message = get_object_or_404(Message, pk=self.kwargs['pk'])
-        return message  # Message.objects.get(pk=self.kwargs['pk'])
+        return message
 
 
 class UpdateMessage(PermissionRequiredMixin, UpdateView):
