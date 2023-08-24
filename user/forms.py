@@ -8,6 +8,7 @@ User = get_user_model()
 
 
 class UserRegisterForm(UserCreationForm):
+    """Форма регистрации"""
     first_name = forms.CharField(max_length=12, min_length=4, required=True, help_text='Required: First Name',
                                  widget=forms.TextInput(
                                      attrs={'class': 'form-control', 'placeholder': 'Имя'}))
@@ -29,6 +30,7 @@ class UserRegisterForm(UserCreationForm):
 
 
 class UserProfileForm(UserChangeForm):
+    """Форма профиля"""
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'phone', 'avatar')
@@ -44,6 +46,7 @@ class UserProfileForm(UserChangeForm):
 
 
 class UserBlockedForm(forms.ModelForm):
+    """Форма блокировки юзера"""
     class Meta:
         model = User
         fields = ('is_active',)
